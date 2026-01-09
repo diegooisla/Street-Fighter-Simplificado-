@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 import java.util.Scanner;
 
 public class ServidorMain {
@@ -53,24 +52,31 @@ public class ServidorMain {
 				comprobarJugadas(jug2, jug1, descripcionJugadas);
 				
 				System.out.println("Jugadas comprobadas");
-				resultado = "-----RESULTADOS-----\n %s - Movimiento: %s - PH actuales: %d\n %s - Movimiento: %s - PH actuales: %d\n%s"
+				resultado = "--------------------RESULTADOS--------------------\n %s - Movimiento: %s - PH actuales: %d\n %s - Movimiento: %s - PH actuales: %d\n%s--------------------------------------------------"
 						.formatted(jug1.getNombre(), jug1.getAccionActual(), jug1.getVida(), jug2.getNombre(), jug2.getAccionActual(), jug2.getVida(), descripcionJugadas.toString());
 				
-				
+				// Se envía el resultado a cada cliente.
 				flujoSalida1.writeUTF(resultado);
 				flujoSalida2.writeUTF(resultado);
 				
+				// Se mandan las vidas de cada jugador para que se actualicen en cliente.
 				flujoSalida1.writeInt(jug1.getVida());
 				flujoSalida2.writeInt(jug2.getVida());
 				
 				
-				if(jug1.getVida() == 0 || jug2.getVida() == 0) {
+				if(!jug1.estaVivo() || !jug2.estaVivo()) {
 					finalizado = true;
 				}
 				
+				//Se envían los resultados finales del combate para ver si deben seguir luchando.
 				flujoSalida1.writeBoolean(finalizado);
 				flujoSalida2.writeBoolean(finalizado);
 			}
+			
+			//Se mandan los resultados del combate para ver si los jugadores ganaron o perdieron.
+			flujoSalida1.writeBoolean(jug1.estaVivo());
+			flujoSalida2.writeBoolean(jug2.estaVivo());
+			
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -85,32 +91,29 @@ public class ServidorMain {
 	}
 
 	private static void comprobarJugadas(Jugador atacante, Jugador defensor, StringBuilder desc) {
-		// Probabilidad 50/50 de que alguna de las dos formas de esquiva falle.
-		Random prob = new Random();
-		if(atacante.getAccionActual() == Accion.ATACAR) {
+		Accion ataque = atacante.getAccionActual();
+		
+		//En función del ataque, las opciones de esquiva pueden cambiar: 
+		if(ataque == Accion.PUÑETAZO || ataque == Accion.PATADA) {
 			switch(defensor.getAccionActual()) {
 			case BLOQUEAR:
 				defensor.daño(5);
-				desc.append("%s ataca pero %s bloquea (5 de daño)\n".formatted(atacante.getNombre(), defensor.getNombre()));
+				desc.append("%s ataca pero %s bloquea como puede (5 de daño)\n".formatted(atacante.getNombre(), defensor.getNombre()));
 				break;
 			case SALTAR:
-				desc.append("%s ataca pero %s salta".formatted(atacante.getNombre(), defensor.getNombre()));
-				if(prob.nextBoolean())
-					desc.append(", por lo que no recibe daño\n");
-				else {
-					defensor.daño(15);
-					desc.append(". ¡Oh! No ha podido saltar lo suficiente y se ha llevado un golpe en las partes bajas. ¡Eso tuvo que doler!  (15 de daño crítico)\n");
-					
-				}
+				if(ataque == Accion.PUÑETAZO) {
+					defensor.daño(20);
+					desc.append("%s salta pero %s ataca con un terrible puñetazo que atina en sus partes bajas ¡Eso tuvo que doler! (20 de daño crítico)\n".formatted(defensor.getNombre(), atacante.getNombre()));
+				}else
+					desc.append("%s salta por lo que la patada de %s falla estrepitosamente...\n".formatted(defensor.getNombre(), atacante.getNombre()));
+				
 				break;
 			case AGACHARSE:
-				desc.append("%s ataca pero %s se agacha".formatted(atacante.getNombre(), defensor.getNombre()));
-				if(prob.nextBoolean())
-					desc.append(", por lo que no recibe daño");
-				else {
-					defensor.daño(15);
-					desc.append(". ¡Oh! No se agachó correctamente y se ha llevado un golpe en toda la jeta. ¡Le saltaron unos cuántos dientes! (15 de daño crítico)\n");
-				}
+				if(ataque == Accion.PATADA) {
+					defensor.daño(20);
+					desc.append("%s se agacha pero %s ataca con una terrible patada que atina en toda su jeta ¡Han saltado varios dientes! (20 de daño crítico)\n".formatted(defensor.getNombre(), atacante.getNombre()));
+				}else
+					desc.append("%s se agacha por lo que el puñetazo de %s falla estrepitosamente...\n".formatted(defensor.getNombre(), atacante.getNombre()));
 				break;
 			default:
 				defensor.daño(10);
@@ -119,6 +122,9 @@ public class ServidorMain {
 			}
 		}
 		
+		
+		
 	}
+	
 
 }

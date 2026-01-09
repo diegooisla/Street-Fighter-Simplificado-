@@ -40,10 +40,11 @@ public class ClienteMain {
 			while(!finalizado) {
 				do {
 					System.out.printf("¿Cuál será tu próximo movimiento %s? Elige:"
-							+ "\n\t 1. Atacar."
-							+ "\n\t 2. Bloquear."
-							+ "\n\t 3. Saltar."
-							+ "\n\t 4. Agacharse."
+							+ "\n\t 1. Puñetazo."
+							+ "\n\t 2. Patada."
+							+ "\n\t 3. Bloquear."
+							+ "\n\t 4. Saltar."
+							+ "\n\t 5. Agacharse."
 							+ "\nRecuerda elegir uno de los números: ", nombre);
 					try {
 						opcion = Integer.parseInt(sc.nextLine());
@@ -53,23 +54,25 @@ public class ClienteMain {
 					
 					switch(opcion) {
 					case 1:
-						jug.setAccionActual(Accion.ATACAR);
-						System.out.println(jug.getAccionActual());
+						jug.setAccionActual(Accion.PUÑETAZO);
 						break;
 					case 2:
-						jug.setAccionActual(Accion.BLOQUEAR);
+						jug.setAccionActual(Accion.PATADA);
 						break;
 					case 3:
-						jug.setAccionActual(Accion.SALTAR);
+						jug.setAccionActual(Accion.BLOQUEAR);
 						break;
 					case 4:
+						jug.setAccionActual(Accion.SALTAR);
+						break;
+					case 5:
 						jug.setAccionActual(Accion.AGACHARSE);
 						break;
 					default:
-						System.out.println("¡Debes elegir un número entre 1 y 4!");
+						System.out.println("¡Debes elegir un número entre 1 y 5!");
 						break;
 					}
-				}while(opcion != 1 && opcion != 2 && opcion != 3 && opcion != 4);
+				}while(opcion != 1 && opcion != 2 && opcion != 3 && opcion != 4  && opcion != 5);
 				
 				flujoSalida.writeObject(jug);
 				flujoSalida.reset();
@@ -85,10 +88,10 @@ public class ClienteMain {
 				
 			}
 			
-			if(jug.getVida() > 0)
-				System.out.println("Combate finalizado. Has ganado!");
+			if(flujoEntrada.readBoolean() )
+				System.out.println("Combate finalizado. Te quedan " + jug.getVida() + " puntos de vida. Has ganado! "  + (jug.getVida() < 50 ? " Aunque deberías ir a la enfermería" : " Y encima sin apenas lesiones."));
 			else
-				System.out.println("Combate finalizado. Has perdido!");
+				System.out.printf("Combate finalizado. Has perdido! Te has quedado a %d de vida. A la enfermería, ¡Rápido!", jug.getVida());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Fallo en la entrada o la salida: " + e.getMessage());

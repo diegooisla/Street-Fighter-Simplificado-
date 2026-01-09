@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Jugador implements Serializable{
 	/**
-	 * 
+	 Clase que almacena el nombre del jugador, su vida, y la acción de cada turno
 	 */
 	private static final long serialVersionUID = 1L;
 	private String nombre;
