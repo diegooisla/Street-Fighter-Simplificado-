@@ -94,14 +94,14 @@ public class ServidorMain {
 		Accion ataque = atacante.getAccionActual();
 		
 		//En función del ataque, las opciones de esquiva pueden cambiar: 
-		if(ataque == Accion.PUÑETAZO || ataque == Accion.PATADA) {
+		if(ataque == Accion.PUNIETAZO || ataque == Accion.PATADA) {
 			switch(defensor.getAccionActual()) {
 			case BLOQUEAR:
 				defensor.daño(5);
 				desc.append("%s ataca pero %s bloquea como puede (5 de daño)\n".formatted(atacante.getNombre(), defensor.getNombre()));
 				break;
 			case SALTAR:
-				if(ataque == Accion.PUÑETAZO) {
+				if(ataque == Accion.PUNIETAZO) {
 					defensor.daño(20);
 					desc.append("%s salta pero %s ataca con un terrible puñetazo que atina en sus partes bajas ¡Eso tuvo que doler! (20 de daño crítico)\n".formatted(defensor.getNombre(), atacante.getNombre()));
 				}else

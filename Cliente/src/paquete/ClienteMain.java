@@ -54,7 +54,7 @@ public class ClienteMain {
 					
 					switch(opcion) {
 					case 1:
-						jug.setAccionActual(Accion.PUÑETAZO);
+						jug.setAccionActual(Accion.PUNIETAZO);
 						break;
 					case 2:
 						jug.setAccionActual(Accion.PATADA);
