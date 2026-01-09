@@ -47,6 +47,7 @@ public class ServidorMain {
 				
 				System.out.println("Juagadas recibidas.");
 				
+				// Va recogiendo cadenas que va añadiendo a su buffer. Posteriormente se añadirá la descripción al resultado.
 				StringBuilder descripcionJugadas = new StringBuilder();
 				comprobarJugadas(jug1, jug2, descripcionJugadas);
 				comprobarJugadas(jug2, jug1, descripcionJugadas);

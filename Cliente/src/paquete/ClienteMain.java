@@ -88,6 +88,7 @@ public class ClienteMain {
 				
 			}
 			
+			//Una vez acabado el combate, se obtiene un mensaje u otro en función de la vida restante.
 			if(flujoEntrada.readBoolean() )
 				System.out.println("Combate finalizado. Te quedan " + jug.getVida() + " puntos de vida. Has ganado! "  + (jug.getVida() < 50 ? " Aunque deberías ir a la enfermería" : " Y encima sin apenas lesiones."));
 			else
